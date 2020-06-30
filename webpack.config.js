@@ -30,7 +30,6 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '~components': `${sourceDir}/js/components`,
       '~constants': `${sourceDir}/js/constants`,
       '~managers': `${sourceDir}/js/managers`,
       '~utils': `${sourceDir}/js/utils`,
@@ -52,12 +51,12 @@ module.exports = {
           { loader: 'css-loader', options: { importLoaders: 1 } },
           isProd
             ? {
-                loader: 'postcss-loader',
-                options: {
-                  ident: 'postcss',
-                  plugins: () => [postcssPresetEnv(), cssnano()],
-                },
-              }
+              loader: 'postcss-loader',
+              options: {
+                ident: 'postcss',
+                plugins: () => [postcssPresetEnv(), cssnano()],
+              },
+            }
             : null,
           'sass-loader',
         ].filter(Boolean),
@@ -102,14 +101,10 @@ module.exports = {
         return path.join(buildDir, page, 'index.html')
       },
       data: path.join(sourceDir, 'data', '*.json'),
-      partials: [
-        path.join(templateDir, 'template.hbs'),
-        path.join(sourceDir, 'views', '*', '*.hbs'),
-      ],
+      partials: [path.join(templateDir, 'template.hbs'), path.join(sourceDir, 'views', '*', '*.hbs')],
       onBeforeSetup: Handlebars => {
         return registerHandlersHelpers(Handlebars)
       },
-      onBeforeRender: (Handlebars, data) => {},
     }),
     new CopyWebpackPlugin([
       {

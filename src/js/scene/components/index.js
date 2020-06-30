@@ -113,9 +113,6 @@ export default class Scene {
       this.light = new Light(this.scene, this.camera)
     }
 
-    // TopTree.init(this.scene)
-    // BottomTree.init(this.scene)
-
     // // load tree
     this.tree = new Tree(this.scene, this.camera)
 
