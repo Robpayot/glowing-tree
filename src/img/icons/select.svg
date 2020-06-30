@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="8px" height="5px" viewBox="0 0 8 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+    <title>Triangle</title>
+    <desc>Created with Sketch.</desc>
+    <g id="WIRE-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="People" transform="translate(-701.000000, -1053.000000)" fill="#001F1E">
+            <g id="SEARCH-BAR" transform="translate(243.000000, 1039.000000)">
+                <g id="Country" transform="translate(296.000000, 0.000000)">
+                    <polygon id="Triangle" transform="translate(166.000000, 16.500000) rotate(-180.000000) translate(-166.000000, -16.500000) " points="166 14 170 19 162 19"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

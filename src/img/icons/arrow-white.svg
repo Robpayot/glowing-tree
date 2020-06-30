@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="10px" viewBox="0 0 16 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+    <title>Style</title>
+    <desc>Created with Sketch.</desc>
+    <g id="WIRE-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="our-missions" transform="translate(-127.000000, -445.000000)" fill="#FFFFFF">
+            <g id="NAV" transform="translate(100.000000, 103.000000)">
+                <g id="Group-5" transform="translate(0.000000, 8.000000)">
+                    <g id="Group-3-Copy-2" transform="translate(35.000000, 339.000000) rotate(90.000000) translate(-35.000000, -339.000000) translate(0.000000, 304.000000)">
+                        <g id="Outlined/UI/arrow_down" transform="translate(30.000000, 27.000000)">
+                            <path d="M8.53812501,11.4425 L5.5625,14.418125 L5.5625,0.124999975 L4.4375,0.124999975 L4.4375,14.418125 L1.46187499,11.4425 L0.663124986,12.24125 L3.8075,15.38 C4.46633948,16.0380201 5.53366052,16.0380201 6.1925,15.38 L9.33687501,12.24125 L8.53812501,11.4425 Z" id="Style"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

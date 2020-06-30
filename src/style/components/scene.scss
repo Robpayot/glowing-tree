@@ -1,0 +1,70 @@
+.scene {
+  // background-color: white;
+  // background: url('/img/assets-scene/images/scene-bkg.png');
+  background-size: cover;
+  height: 100vh;
+  position: fixed;
+  width: 100%;
+  z-index: 3;
+
+  &__canvas {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    // z-index: 4;
+  }
+
+  &__cta {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    font-size: 10px;
+    border-radius: 30px;
+    pointer-events: all;
+
+    &--prev {
+      margin-top: 30px;
+    }
+
+    &--next {
+      margin-bottom: 30px;
+    }
+
+    &--select {
+      margin-top: 60px;
+    }
+  }
+
+  &__loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__overlay {
+    height: 100vh;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    pointer-events: none;
+
+    &::before {
+      background-size: 100% 100%;
+      background-image: url('/img/assets-scene/images/vignettage.png');
+      content: '';
+      height: 100%;
+      left: 0;
+      opacity: 0.8;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+  }
+}
+
+.dg.ac {
+  // display: none;
+  z-index: 4 !important;
+}
