@@ -1,6 +1,6 @@
 import LoaderManager from '~managers/LoaderManager'
 import { fillWithPoints, getCenterPoint } from '../../utils/three-utils'
-import { COLORS, BLOOM } from '~constants/index'
+import { COLORS } from '~constants/index'
 import { randomFloat, clamp, toRadian } from '~utils/math'
 import customPointsMaterialFrag from '../../shaders/customPointsMaterial.frag'
 import customPointsMaterialVert from '../../shaders/customPointsMaterial.vert'
@@ -51,10 +51,10 @@ export default class Leaves {
       {
         object: fbx.children[1],
         material,
-        nbParticles: BLOOM ? 5000 : 10000,
+        nbParticles: 5000,
         pointSize: 2,
         pointSizeMin: 1.8,
-        pointSizeMax: 6,
+        pointSizeMax: 4.5,
       },
       {
         object: fbx.children[0],
@@ -62,7 +62,7 @@ export default class Leaves {
         nbParticles: 250,
         pointSize: 5,
         pointSizeMin: 5,
-        pointSizeMax: 10,
+        pointSizeMax: 7,
       },
     ]
 
@@ -70,10 +70,12 @@ export default class Leaves {
       const leaves = this.groupLeaves[i]
       const center = getCenterPoint(leaves.object)
       center.y = 0
+      leaves.object.rotation.z += THREE.Math.degToRad(-2)
       const bufferGeometry = fillWithPoints(leaves.object.geometry, leaves.nbParticles)
       this.initMaterial(bufferGeometry, leaves)
       leaves.mesh = this.addMesh(bufferGeometry, leaves)
       leaves.center = center
+      leaves.originRotation = leaves.object.rotation.clone()
     }
 
     this.guiController = { particles_color: COLORS.particles }
@@ -151,9 +153,10 @@ export default class Leaves {
       // more to do!
       if (this.currentRotateY !== toRadian(this.targetRotateY) && this.currentRotateX !== toRadian(this.targetRotateX)) {
         this.mouseMoveRotate()
-      } else {
-        console.log(this.currentRotateY, this.targetRotateY)
       }
+    } else {
+      // reset rotations
+      this.resetRotations()
     }
 
     for (let i = 0; i < this.groupLeaves.length; i++) {
@@ -180,7 +183,6 @@ export default class Leaves {
       const { mesh, center } = this.groupLeaves[i]
       this.currentRotateY += (toRadian(this.targetRotateY) - this.currentRotateY) * this.coefRotate
       this.currentRotateX += (toRadian(this.targetRotateX) - this.currentRotateX) * this.coefRotate
-      // mesh.rotation.y = value
 
       const axisX = new THREE.Vector3() // create once an reuse it
       axisX.subVectors( cameraPos, center ).normalize()
@@ -196,27 +198,6 @@ export default class Leaves {
 
       this.rotateOnWorldAxis(mesh, rotations)
     }
-
-
-    // if (CameraController.animStarted === false) {
-    //   // console.log(this.camera.children[0])
-    //   this.camera.parent.updateMatrixWorld()
-    //   const vector = new THREE.Vector3()
-    //   vector.setFromMatrixPosition(this.camera.children[0].matrixWorld)
-    //   this.groupLeaves[0].mesh.lookAt(vector)
-    //   // clamp rotation
-    //   console.log(THREE.Math.radToDeg(this.groupLeaves[0].mesh.rotation.x))
-    //   // if (THREE.Math.radToDeg((this.groupLeaves[0].mesh.rotation.x))
-
-    //   // console.log(this.groupLeaves[0].mesh.rotation.z)
-    //   this.groupLeaves[1].mesh.lookAt(vector)
-    // }
-    // if (this.camera.rotation.x !== toRadian(this.targetRotateX)) {
-    //   this.camera.rotation.x += (toRadian(this.targetRotateX) - this.camera.rotation.x) * this.coefRotate
-    // }
-    // if (this.camera.rotation.y !== toRadian(this.targetRotateY)) {
-    //   this.camera.rotation.y += (toRadian(this.targetRotateY) - this.camera.rotation.y) * this.coefRotate
-    // }
   }
 
   rotateOnWorldAxis(object, rotations) {
@@ -235,6 +216,13 @@ export default class Leaves {
     object.rotation.copy(helper.rotation)
     // remove helper
     helper.remove()
+  }
+
+  resetRotations() {
+    for (let i = 0; i < this.groupLeaves.length; i++) {
+      const { mesh, originRotation } = this.groupLeaves[i]
+      mesh.rotation.copy(originRotation)
+    }
   }
 
   guiChange = () => {
