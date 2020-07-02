@@ -1,6 +1,6 @@
 import LoaderManager from '~managers/LoaderManager'
 import GUI from '../Gui'
-import { COLORS, BLOOM } from '~constants/index'
+import { COLORS } from '~constants/index'
 
 const { THREE } = window
 
@@ -22,7 +22,7 @@ export default class Tree {
   init(scene, camera) {
     this.scene = scene
     this.camera = camera
-    this.guiController = { tree_color: COLORS.tree, roughness: 80 }
+    this.guiController = { tree_color: COLORS.tree }
 
     // set all geometries
     const { gltf } = LoaderManager.subjects.scene
@@ -30,12 +30,6 @@ export default class Tree {
     this.tree = gltf.scene.getObjectByName('GEO')
     this.tree.material = new THREE.MeshBasicMaterial()
     this.tree.material.color.setHex(this.guiController.tree_color)
-
-    if (BLOOM) {
-      this.tree.material.roughness = 93
-      this.tree.material.map = null
-      this.tree.material.normalMap = null
-    }
 
     this.scene.add(this.tree)
 
