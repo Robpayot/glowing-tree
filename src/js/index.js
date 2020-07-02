@@ -1,7 +1,3 @@
-// polyfills
-import 'promise-polyfill/src/polyfill'
-import 'custom-event-polyfill'
-
 // Managers
 import './managers/RAFManager'
 import './managers/ResizeManager'

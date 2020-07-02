@@ -17,9 +17,8 @@ import Branches from './Branches/index'
 import LoaderManager from '../../managers/LoaderManager'
 import Leaves from './Leaves/index'
 import CameraController from './CameraController/index'
-import Light from './Light/index'
 
-import { RAF, WINDOW_RESIZE, MOUSE_MOVE, DEBUG, START_SCENE, BLOOM } from '../../constants/index'
+import { RAF, WINDOW_RESIZE, MOUSE_MOVE, DEBUG, START_SCENE } from '../../constants/index'
 
 import bloomFragment from '../shaders/bloom.frag'
 import bloomVertex from '../shaders/bloom.vert'
@@ -58,26 +57,6 @@ export default class Scene {
           texture: `${ASSETS}images/particles/particle-7.png`,
         },
         {
-          name: 'tree_normal',
-          texture: `${ASSETS}images/tree/tree_mat_normal.jpg`,
-        },
-        {
-          name: 'tree_map',
-          texture: `${ASSETS}images/tree/tree_mat_1003.jpg`,
-        },
-        {
-          name: 'tree_envmap',
-          cubeTexture: `${ASSETS}images/envmap/`,
-        },
-        {
-          name: 'tree_matcap',
-          texture: `${ASSETS}images/tree/matcap.jpg`,
-        },
-        {
-          name: 'trunkmap',
-          texture: `${ASSETS}images/tree/bake.png`,
-        },
-        {
           name: 'leaves',
           fbx: `${ASSETS}fbx/tree_V44.fbx`,
         },
@@ -103,15 +82,10 @@ export default class Scene {
 
     this.initGUI()
 
-    if (BLOOM) {
-      this.bloom()
+    this.bloom()
 
-      this.buildBackground()
-      this.branches = new Branches(this.scene, this.camera)
-      this.light = new Light(this.scene, this.camera)
-    } else {
-      this.light = new Light(this.scene, this.camera)
-    }
+    this.buildBackground()
+    this.branches = new Branches(this.scene, this.camera)
 
     // // load tree
     this.tree = new Tree(this.scene, this.camera)
@@ -136,24 +110,19 @@ export default class Scene {
       background: 0xa231a,
     }
 
-    if (BLOOM) {
-      GUI.add(this.guiController, 'exposure', 0.0, 10.0).onChange(this.guiChange)
-      GUI.add(this.guiController, 'bloomStrength', 0.0, 20.0).onChange(this.guiChange)
-      GUI.add(this.guiController, 'bloomThreshold', 0.0, 1.0).onChange(this.guiChange)
-      GUI.add(this.guiController, 'bloomRadius', 0.0, 10.0).onChange(this.guiChange)
-    }
+    GUI.add(this.guiController, 'exposure', 0.0, 10.0).onChange(this.guiChange)
+    GUI.add(this.guiController, 'bloomStrength', 0.0, 20.0).onChange(this.guiChange)
+    GUI.add(this.guiController, 'bloomThreshold', 0.0, 1.0).onChange(this.guiChange)
+    GUI.add(this.guiController, 'bloomRadius', 0.0, 10.0).onChange(this.guiChange)
     // GUI.addColor(this.guiController, 'background').onChange(this.guiChange)
   }
 
   guiChange = () => {
-    if (BLOOM) {
-      this.renderer.toneMappingExposure = Math.pow(this.guiController.exposure, 4.0)
-      this.bloomPass.threshold = Number(this.guiController.bloomThreshold)
-      this.bloomPass.strength = Number(this.guiController.bloomStrength)
-      this.bloomPass.radius = Number(this.guiController.bloomRadius)
-      this.backgroundTexture.material.color.setHex(this.guiController.background)
-    }
-    // this.renderer.setClearColor(this.guiController.background, 1)
+    this.renderer.toneMappingExposure = Math.pow(this.guiController.exposure, 4.0)
+    this.bloomPass.threshold = Number(this.guiController.bloomThreshold)
+    this.bloomPass.strength = Number(this.guiController.bloomStrength)
+    this.bloomPass.radius = Number(this.guiController.bloomRadius)
+    this.backgroundTexture.material.color.setHex(this.guiController.background)
   }
 
   events() {
@@ -164,7 +133,6 @@ export default class Scene {
   }
 
   buildBackground() {
-    // const { texture } = LoaderManager.subjects.scene
     const geo = new THREE.PlaneGeometry(4000, 4000, 100)
     const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(this.guiController.background) })
     const mesh = new THREE.Mesh(geo, mat)
@@ -182,12 +150,6 @@ export default class Scene {
 
   buildScene() {
     this.scene = new THREE.Scene()
-
-    if (!BLOOM) {
-      const { texture } = LoaderManager.subjects.scene
-
-      this.scene.background = texture
-    }
   }
 
   buildRender() {
@@ -198,9 +160,7 @@ export default class Scene {
       autoClearColor: false,
     })
 
-    if (BLOOM) {
-      this.renderer.toneMapping = THREE.ReinhardToneMapping
-    }
+    this.renderer.toneMapping = THREE.ReinhardToneMapping // ACESFilmicToneMapping,
 
     this.setSizes()
   }
@@ -241,9 +201,6 @@ export default class Scene {
     this.finalComposer.addPass(this.renderScene)
     this.finalComposer.addPass(finalPass)
 
-    // this.scene.traverse(this.disposeMaterial)
-    // this.scene.children.length = 0
-
     this.renderer.toneMappingExposure = Math.pow(this.guiController.exposure, 4.0)
   }
 
@@ -269,8 +226,6 @@ export default class Scene {
 
   buildControls() {
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
-    // this.controls.autoRotate = true
-    this.controls.autoRotateSpeed = 0.8
     this.controls.enableDamping = true
   }
 
@@ -286,22 +241,15 @@ export default class Scene {
     if (this.floatingParticles) this.floatingParticles.render(now)
     if (this.branches) this.branches.render(now)
     if (this.leaves) this.leaves.render(now)
-    if (this.light) this.light.render(now)
 
     if (!DEBUG) {
       CameraController.render(now)
 
-      if (BLOOM) {
-        this.moveBackground()
-      }
+      this.moveBackground()
     }
 
-    if (this.bloomComposer) {
-      this.renderBloom(true)
-      this.finalComposer.render()
-    } else {
-      this.renderer.render(this.scene, this.camera)
-    }
+    this.renderBloom(true)
+    this.finalComposer.render()
 
     this.stats.end()
   }
@@ -312,7 +260,6 @@ export default class Scene {
     const vector = new THREE.Vector3() // create once and reuse it!
     this.camera.getWorldDirection(vector)
 
-    // console.log(vector)
     const clonePosition = this.camera.parent.position.clone()
     const position = clonePosition.add(vector.multiplyScalar(3000))
 
@@ -382,20 +329,6 @@ export default class Scene {
       this.renderer.setPixelRatio(DPR)
     }
     this.renderer.setSize(this.width, this.height)
-
-    // resize image cover style
-    if (this.scene.image) {
-      const imageAspect = this.scene.image
-        ? this.scene.image.width / this.scene.image.height
-        : 1
-      const aspect = imageAspect / this.camera.aspect
-
-      this.scene.offset.x = aspect > 1 ? (1 - 1 / aspect) / 2 : 0
-      this.scene.repeat.x = aspect > 1 ? 1 / aspect : 1
-
-      this.scene.offset.y = aspect > 1 ? 0 : (1 - aspect) / 2
-      this.scene.repeat.y = aspect > 1 ? 1 : aspect
-    }
   }
 
   setUnits() {

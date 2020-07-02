@@ -6,7 +6,6 @@ class Gui extends dat.GUI {
 
     this.controller = {}
     this.lineController = {}
-    // this.close()
   }
 }
 
