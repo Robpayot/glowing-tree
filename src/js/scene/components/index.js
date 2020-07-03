@@ -18,7 +18,7 @@ import LoaderManager from '../../managers/LoaderManager'
 import Leaves from './Leaves/index'
 import CameraController from './CameraController/index'
 
-import { RAF, WINDOW_RESIZE, MOUSE_MOVE, DEBUG, START_SCENE } from '../../constants/index'
+import { RAF, WINDOW_RESIZE, MOUSE_MOVE, DEBUG, SCROLL, START_SCENE } from '../../constants/index'
 
 import bloomFragment from '../shaders/bloom.frag'
 import bloomVertex from '../shaders/bloom.vert'
@@ -33,6 +33,7 @@ const ENTIRE_SCENE = 0,
 export default class Scene {
   constructor(el) {
     this.canvas = el
+    this.scrollContainerEl = document.querySelector('.scroll-container')
 
     this.setUnits()
 
@@ -129,7 +130,7 @@ export default class Scene {
     window.addEventListener(WINDOW_RESIZE, this.handleResize, { passive: true })
     window.addEventListener(RAF, this.render, { passive: true })
     window.addEventListener('mousemove', this.handleMouseMove)
-    // window.addEventListener('wheel', this.handleScroll)
+    window.addEventListener('scroll', this.handleScroll)
   }
 
   buildBackground() {
@@ -308,6 +309,10 @@ export default class Scene {
     window.dispatchEvent(createCustomEvent(MOUSE_MOVE, { x, y }))
   }
 
+  handleScroll = () => {
+    window.dispatchEvent(createCustomEvent(SCROLL, { scrollY: window.scrollY, maxHeight: this.maxHeight }))
+  }
+
   handleResize = () => {
     this.setUnits()
 
@@ -329,6 +334,7 @@ export default class Scene {
       this.renderer.setPixelRatio(DPR)
     }
     this.renderer.setSize(this.width, this.height)
+    this.maxHeight = this.scrollContainerEl.offsetHeight - window.innerHeight
   }
 
   setUnits() {

@@ -1,7 +1,7 @@
 import { getNow } from '~utils/time'
 import { toRadian } from '~utils/math'
 import { inOutQuart } from '~utils/ease'
-import { DEBUG, MOUSE_MOVE, GO_TO_PREV, GO_TO_NEXT, GO_TO } from '~constants/index'
+import { DEBUG, MOUSE_MOVE, GO_TO_PREV, GO_TO_NEXT, GO_TO, SCROLL } from '~constants/index'
 import LoaderManager from '~managers/LoaderManager'
 import createCustomEvent from '~utils/createCustomEvent'
 import touchEnabled from '~utils/touchEnabled'
@@ -38,8 +38,6 @@ class CameraController {
     // Intro
     this.durationIntroPosition = 8000
     this.durationIntroLook = 8000
-
-    this.durationTree = 7000
   }
 
   init(camera, scene) {
@@ -98,10 +96,6 @@ class CameraController {
 
       // setTimeout(() => {
       this.startIntro()
-      // }, 0)
-
-      // setTimeout(() => {
-      this.startTree()
       // }, 0)
     }
   }
@@ -277,6 +271,8 @@ class CameraController {
       window.addEventListener(MOUSE_MOVE, this.handleMouseMove)
     }
 
+    window.addEventListener(SCROLL, this.handleScroll)
+
     window.addEventListener(GO_TO_PREV, this.goToPrev)
     window.addEventListener(GO_TO_NEXT, this.goToNext)
     window.addEventListener(GO_TO, this.goTo)
@@ -303,6 +299,28 @@ class CameraController {
 
     this.targetRotateX = -(this.mouse.y * 1) * forceX + 180
     this.targetRotateY = this.mouse.x * forceY
+  }
+
+  handleScroll = e => {
+    const { scrollY, maxHeight } = e.detail
+    const progress = scrollY / maxHeight
+    // console.log(progress)
+    const currentPos = this.trailPosition.getPoint(progress)
+    this.cameraBox.position.copy(currentPos)
+
+    let lookAt = this.steps[0].targetLook
+    for (let i = 0; i < this.steps.length; i++) {
+      const prevStep = this.steps[i - 1]
+      const step = this.steps[i]
+      if (prevStep && progress > prevStep.targetPosition && progress < step.targetPosition) {
+        lookAt = this.steps[i].targetLook
+      }
+    }
+    this.originLookX = lookAt.x
+    this.originLookY = lookAt.y
+    this.originLookZ = lookAt.z
+
+    this.cameraBox.lookAt(new THREE.Vector3(this.originLookX, this.originLookY, 0))
   }
 
   goToPrev = () => {
@@ -379,7 +397,6 @@ class CameraController {
     this.startIntroAnimation = getNow()
     this.introStarted = true
     this.introEnded = false
-    console.log('start')
 
     this.originLookIntroX = this.lookIntroPoints[0].x
     this.originLookIntroY = this.lookIntroPoints[0].y
@@ -389,15 +406,7 @@ class CameraController {
     this.targetLookIntro = this.lookIntroPoints[1]
   }
 
-  startTree() {
-    this.startTreeAnimation = getNow()
-  }
-
   render(now) {
-    if (this.startTreeAnimation) {
-      this.animateTree(now)
-    }
-
     if (!this.introEnded && this.introStarted) {
       this.animateIntro(now)
     } else if (this.startAnimation) {
@@ -445,12 +454,6 @@ class CameraController {
     } else {
       this.animStarted = false
     }
-
-    // if (this.progressPosition < this.allowRotateThreshold) {
-    //   // reset pos
-    //   // this.targetRotateX = 180
-    //   // this.targetRotateY = 0
-    // }
   }
 
   animateIntro(now) {
@@ -476,28 +479,6 @@ class CameraController {
     this.progressLookIntroZ = this.originLookIntroZ + (this.targetLookIntro.z - this.originLookIntroZ) * inOutQuart(percentLook)
 
     this.cameraBox.lookAt(new THREE.Vector3(this.progressLookIntroX, this.progressLookIntroY, 0))
-  }
-
-  animateTree(now) {
-    const percent = (now - this.startTreeAnimation) / this.durationTree
-
-    if (percent > 1) {
-      return
-    }
-
-    // const scale = 90 + (115 - 90) * inOutQuart(percent)
-    // console.log(window.tree)
-    // window.tree.scale.set(115, scale, 115)
-
-    // const topTargetTree = TopTree.originTop - TopTree.originTop * inOutQuart(percent)
-    // const topTargetRTree = TopTree.originRotateY - TopTree.originRotateY * inOutQuart(percent)
-    // TopTree.object.position.y = topTargetTree
-    // TopTree.object.rotation.y = topTargetRTree
-
-    // const bottomTargetTree = BottomTree.originBottom - BottomTree.originBottom * inOutQuart(percent)
-    // const bottomTargetRTree = BottomTree.originRotateY - BottomTree.originRotateY * inOutQuart(percent)
-    // BottomTree.object.position.y = bottomTargetTree
-    // BottomTree.object.rotation.y = bottomTargetRTree
   }
 
   guiChange = () => {

@@ -11,6 +11,7 @@ export const GO_TO_PREV = 'GO_TO_PREV'
 export const GO_TO = 'GO_TO'
 export const PAUSE_SCENE = 'PAUSE_SCENE'
 export const START_SCENE = 'START_SCENE'
+export const SCROLL = 'SCROLL'
 
 let colors
 
