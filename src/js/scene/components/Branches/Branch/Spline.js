@@ -231,7 +231,7 @@ export default class Spline {
 
     if (this.started) {
       // this.point.material.visible = true
-      const { dashOffset, dashArray, dashRatio, lineWidth } = this.lineMesh.material.uniforms
+      const { lineWidth } = this.lineMesh.material.uniforms
       const percent = (this.now - this.startAnimation) / this.duration
 
       if (percent < 1) {

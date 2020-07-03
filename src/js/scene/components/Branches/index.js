@@ -53,11 +53,10 @@ export default class Branches {
   guiChange = () => {
     for (let i = 0; i < this.branches.length; i++) {
       const branch = this.branches[i]
-      console.log(branch)
       for (let j = 0; j < branch.splines.length; j++) {
         const spline = branch.splines[j]
-
-        spline.lineMaterial.uniforms.color.value = new THREE.Color(this.guiController.splines_color)
+        spline.pointMaterial.color.setHex(this.guiController.splines_color)
+        spline.lineMesh.material.uniforms.color.value = new THREE.Color(this.guiController.splines_color)
       }
     }
   }
