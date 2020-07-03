@@ -1,5 +1,5 @@
 import { MeshLine, MeshLineMaterial } from '../../../vendor/three/three.meshline'
-import { randomInt, randomFloat, oscillateBetween, clamp } from '~utils/math'
+import { randomInt, oscillateBetween, clamp } from '~utils/math'
 import { getNow } from '~utils/time'
 import LoaderManager from '~managers/LoaderManager'
 import { COLORS } from '~constants/index'
@@ -94,7 +94,6 @@ export default class Spline {
   constructor(scene, camera, points) {
     this.scene = scene
     this.camera = camera
-    this.particleTexture = LoaderManager.subjects.particle_1.texture
 
     // console.log(points)
 
@@ -104,16 +103,15 @@ export default class Spline {
     this.lineWidthMin = 0.5
     this.lineWidthMax = 1.5
     this.lineSinFq = 6
-    this.nbPoints = randomInt(50, 300)
+    this.nbPoints = randomInt(50, 300) // AKA length
 
-    // this.positionsArray = positionsArray
     this.duration = randomInt(15000, 16000)
     this.progress = 0
     this.pointMaterial = pointMaterials[this.style]
-    this.pointMaterial.map = this.particleTexture
+    this.pointMaterial.map = LoaderManager.subjects.particle_1.texture
 
-    this.lineSize = 1
-    this.lineSizeMax = 2.5
+    this.lineThickness = 1 // AKA thickness
+    this.lineThicknessMax = 2.5
     this.rangeTurbulence = 9
 
     this.object = new THREE.Object3D()
@@ -133,14 +131,6 @@ export default class Spline {
   }
 
   createSpline(children) {
-    // console.log(children)
-
-    // const part1 = children.slice(0, 6)
-    // const part2 = children.slice(6, 12)
-
-    // const array = [...part2, ...part1]
-    // set all geometries
-    // console.log(children)
     const array = children
 
     // Filter meshes
@@ -218,11 +208,7 @@ export default class Spline {
   createPoint() {
     this.point = new THREE.Points(pointGeometry, this.pointMaterial)
 
-    // this.point.material.visible = false
     this.point.position.copy(this.trail.getPoint(0).add(this.lineMesh.position))
-    // this.point.layers.enable( 0 )
-    // this.lineMesh.add(this.point)
-
     this.object.add(this.point)
   }
 
@@ -274,25 +260,16 @@ export default class Spline {
       }
 
       if (this.camera.parent) {
-        lineWidth.value = clamp((this.lineSize * this.camera.parent.position.z) / 200, this.lineSize, this.lineSizeMax)
+        lineWidth.value = clamp((this.lineThickness * this.camera.parent.position.z) / 200, this.lineThickness, this.lineThicknessMax)
         this.point.material.size = clamp((pointSize * this.camera.parent.position.z) / 200, pointSize, pointSize + 10)
       } else {
-        lineWidth.value = this.lineSize
+        lineWidth.value = this.lineThickness
       }
 
       const { position } = this.lineMesh.geometry.attributes
       this.point.position.x = position.getX(position.count - 1)
       this.point.position.y = position.getY(position.count - 1)
       this.point.position.z = position.getZ(position.count - 1)
-
-      // console.log(dashOffset.value)
-      // this.progress = Math.max(this.progress, 0) // fix issue sometimes progress is neg? probably due to getNow() not accurate
-      // copy progression along the curve and translate vector position
-      // this.point.position.copy(this.trail.getPoint(this.progress))
-      // Tips for sin -1*0.4+0.6
-      // sin(value) * Amplitude / 2 + middle value
-      // 0.6 < 1
-      // this.point.material.opacity = Math.sin(this.now / 300) * 0.2 + 0.8
     }
   }
 }

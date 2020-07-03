@@ -3,7 +3,7 @@ import Branch from './Branch'
 import GUI from '../Gui'
 import { COLORS } from '~constants/index'
 
-export default class Link {
+export default class Branches {
   constructor(scene, camera) {
     this.scene = scene
     this.camera = camera
@@ -40,11 +40,7 @@ export default class Link {
       const branch = new Branch(this.scene, this.camera, points)
       this.branches.push(branch)
 
-      if (i === 1 || i === 2 || i === 4) {
-        this.scene.add(branch.object)
-      } else {
-        this.scene.add(branch.object)
-      }
+      this.scene.add(branch.object)
     }
   }
 
@@ -57,8 +53,10 @@ export default class Link {
   guiChange = () => {
     for (let i = 0; i < this.branches.length; i++) {
       const branch = this.branches[i]
+      console.log(branch)
       for (let j = 0; j < branch.splines.length; j++) {
         const spline = branch.splines[j]
+
         spline.lineMaterial.uniforms.color.value = new THREE.Color(this.guiController.splines_color)
       }
     }

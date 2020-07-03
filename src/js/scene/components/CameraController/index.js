@@ -5,7 +5,6 @@ import { DEBUG, MOUSE_MOVE, GO_TO_PREV, GO_TO_NEXT, GO_TO } from '~constants/ind
 import LoaderManager from '~managers/LoaderManager'
 import createCustomEvent from '~utils/createCustomEvent'
 import touchEnabled from '~utils/touchEnabled'
-import GUI from '../Gui'
 
 const { THREE } = window
 
