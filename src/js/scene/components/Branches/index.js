@@ -2,6 +2,9 @@ import LoaderManager from '~managers/LoaderManager'
 import Branch from './Branch'
 import GUI from '../Gui'
 import { COLORS } from '~constants/index'
+import { randomInt } from '~utils/math'
+
+const offsetSplineStart = 2000
 
 export default class Branches {
   constructor(scene, camera) {
@@ -12,6 +15,7 @@ export default class Branches {
 
     this.getSplinesPoints()
     this.initBranches()
+    this.startAllAnimations()
 
     this.guiController = { splines_color: COLORS.lines2 }
 
@@ -42,6 +46,30 @@ export default class Branches {
 
       this.scene.add(branch.object)
     }
+  }
+
+  startAllAnimations() {
+    const promises = []
+    // for each branch
+    for (let i = 0; i < this.branches.length; i++) {
+      const branch = this.branches[i]
+      // for each spline
+      for (let j = 0; j < branch.splines.length; j++) {
+        const spline = branch.splines[j]
+        promises.push(spline.animationDone())
+        const offset = randomInt(0, offsetSplineStart)
+        // offset starts
+        setTimeout(() => {
+          spline.start()
+        }, offset)
+      }
+    }
+    // when all the animations of each spline are done =>
+    Promise.all(promises).then(() => {
+      // call this function again
+      this.startAllAnimations()
+      console.log('restart all')
+    })
   }
 
   render(now) {

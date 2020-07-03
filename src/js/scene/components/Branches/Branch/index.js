@@ -16,9 +16,6 @@ export default class Branch {
 
     this.object = new THREE.Object3D()
     this.initSplines()
-
-    // this.start()
-    // setInterval(() => this.start(), 7000)
   }
 
   initSplines() {
@@ -26,14 +23,6 @@ export default class Branch {
       const spline = new Spline(this.scene, this.camera, this.points)
       this.splines.push(spline)
       this.object.add(spline.object)
-    }
-  }
-
-  start() {
-    for (let i = 0; i < this.splines.length; i++) {
-      setTimeout(() => {
-        this.splines[i].start()
-      }, this.splines[i].offsetStart)
     }
   }
 

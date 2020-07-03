@@ -103,9 +103,9 @@ export default class Spline {
     this.lineWidthMin = 0.5
     this.lineWidthMax = 1.5
     this.lineSinFq = 6
-    this.nbPoints = randomInt(50, 300) // AKA length
+    this.nbPoints = randomInt(30, 200) // AKA length
 
-    this.duration = randomInt(15000, 16000)
+    this.duration = 8000 + this.nbPoints * 20
     this.progress = 0
     this.pointMaterial = pointMaterials[this.style]
     this.pointMaterial.map = LoaderManager.subjects.particle_1.texture
@@ -124,10 +124,6 @@ export default class Spline {
     this.object.position.copy(points.position)
 
     this.resetLinePosition()
-
-    setTimeout(() => {
-      this.start()
-    }, randomInt(0, 3000))
   }
 
   createSpline(children) {
@@ -141,8 +137,6 @@ export default class Spline {
       const nbB = parseInt(b.name, 10)
       return nbA - nbB
     })
-
-    // console.log(array)
 
     // // get meshes
     for (let i = 0; i < array.length; i++) {
@@ -223,6 +217,7 @@ export default class Spline {
 
   start() {
     this.started = true
+    this.isAnimationDone = false
     this.startAnimation = getNow()
   }
 
@@ -230,7 +225,6 @@ export default class Spline {
     this.now = now
 
     if (this.started) {
-      // this.point.material.visible = true
       const { lineWidth } = this.lineMesh.material.uniforms
       const percent = (this.now - this.startAnimation) / this.duration
 
@@ -241,21 +235,15 @@ export default class Spline {
         //   this.lineMesh.visible = true
         // }
 
-        // console.log()
-        // dashOffset.value = (-dashArray.value / 2 - (1 - dashRatio.value) * 2) * inOutQuart(percent)
         this.progress = 1 * inOutQuart(percent)
-        // if (percent < 0.7) {
         this.lineTrail.advance(this.trail.getPoint(this.progress))
-
-        // }
       } else {
-        this.startAnimation = getNow()
         this.resetLinePosition()
-        // dashOffset.value = 0
-        // this.lineMesh.visible = false
         this.progress = 0
-        if (!this.stopped) {
-          this.startAnimation = getNow() // restart animation
+
+        if (!this.isAnimationDone) {
+          this.resolveAnimation()
+          this.isAnimationDone = true
         }
       }
 
@@ -271,5 +259,11 @@ export default class Spline {
       this.point.position.y = position.getY(position.count - 1)
       this.point.position.z = position.getZ(position.count - 1)
     }
+  }
+
+  animationDone = () => {
+    return new Promise(resolve => {
+      this.resolveAnimation = resolve
+    })
   }
 }
