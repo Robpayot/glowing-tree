@@ -3,7 +3,6 @@ import { toRadian } from '~utils/math'
 import { inOutQuart } from '~utils/ease'
 import { DEBUG, MOUSE_MOVE, GO_TO_PREV, GO_TO_NEXT, GO_TO, SCROLL } from '~constants/index'
 import LoaderManager from '~managers/LoaderManager'
-import createCustomEvent from '~utils/createCustomEvent'
 import touchEnabled from '~utils/touchEnabled'
 
 const { THREE } = window
@@ -41,7 +40,6 @@ class CameraController {
   }
 
   init(camera, scene) {
-    console.log('init')
     this.cameraBox = new THREE.Object3D()
     this.camera = camera
 
@@ -56,6 +54,7 @@ class CameraController {
 
     this.trailPosition = this.createTrail(cameraPoints)
     this.createLookAt()
+    this.trailLookAt = this.createLookAtTrail(this.lookPoints)
     this.createSteps()
 
     this.introTrailPosition = this.createIntroTrail()
@@ -100,6 +99,34 @@ class CameraController {
     }
   }
 
+  createLookAtTrail(coordinates) {
+    const points = []
+    // // get meshes
+    for (let i = 0; i < coordinates.length; i++) {
+      // position.x *= 115
+      // position.y *= 115
+      // position.z *= 115
+      points.push(coordinates[i])
+    }
+
+    // create trail for camera
+    const curveWithMorePoints = new THREE.CatmullRomCurve3(points).getPoints(200)
+    const finalTrail = new THREE.CatmullRomCurve3(curveWithMorePoints)
+    // For devug
+    // this.trail.curveType = 'catmullrom'
+    // this.trail.tension = 0.99
+    const curveGeometry = new THREE.Geometry().setFromPoints(curveWithMorePoints)
+
+    // // Build the geometry
+    const material = new THREE.LineBasicMaterial({ color: 0xffff00 })
+    // // Create the final object to add to the scene
+    const curveObject = new THREE.Line(curveGeometry, material)
+
+    this.scene.add(curveObject)
+
+    return finalTrail
+  }
+
   createTrail(object) {
     // set all geometries
     const { children } = object
@@ -133,14 +160,14 @@ class CameraController {
     // For devug
     // this.trail.curveType = 'catmullrom'
     // this.trail.tension = 0.99
-    // const curveGeometry = new THREE.Geometry().setFromPoints(curveWithMorePoints)
+    const curveGeometry = new THREE.Geometry().setFromPoints(curveWithMorePoints)
 
-    // // // Build the geometry
-    // const material = new THREE.LineBasicMaterial({ color: 0xff0000 })
-    // // // Create the final object to add to the scene
-    // const curveObject = new THREE.Line(curveGeometry, material)
+    // // Build the geometry
+    const material = new THREE.LineBasicMaterial({ color: 0xff0000 })
+    // // Create the final object to add to the scene
+    const curveObject = new THREE.Line(curveGeometry, material)
 
-    // this.scene.add(curveObject)
+    this.scene.add(curveObject)
 
     return finalTrail
   }
@@ -234,16 +261,6 @@ class CameraController {
     finalTrail.curveType = 'catmullrom'
     finalTrail.tension = 0.3
 
-    // for debug
-    // const curveGeometry = new THREE.Geometry().setFromPoints(curveWithMorePoints)
-
-    // Build the geometry
-    // const material = new THREE.LineBasicMaterial({ color: 0xff0000 })
-    // // Create the final object to add to the scene
-    // const curveObject = new THREE.Line(curveGeometry, material)
-
-    // this.scene.add(curveObject)
-
     return finalTrail
   }
 
@@ -272,21 +289,6 @@ class CameraController {
     }
 
     window.addEventListener(SCROLL, this.handleScroll)
-
-    window.addEventListener(GO_TO_PREV, this.goToPrev)
-    window.addEventListener(GO_TO_NEXT, this.goToNext)
-    window.addEventListener(GO_TO, this.goTo)
-
-    this.ui.prev.addEventListener('click', () => {
-      window.dispatchEvent(createCustomEvent(GO_TO_PREV))
-    })
-    this.ui.next.addEventListener('click', () => {
-      window.dispatchEvent(createCustomEvent(GO_TO_NEXT))
-    })
-    this.ui.select.addEventListener('change', e => {
-      const index = parseInt(e.currentTarget.value, 10) - 1 // if 1 == 0 (first one) etc...
-      window.dispatchEvent(createCustomEvent(GO_TO, { index }))
-    })
   }
 
   handleMouseMove = e => {
@@ -304,76 +306,15 @@ class CameraController {
   handleScroll = e => {
     const { scrollY, maxHeight } = e.detail
     const progress = scrollY / maxHeight
-    // console.log(progress)
     const currentPos = this.trailPosition.getPoint(progress)
     this.cameraBox.position.copy(currentPos)
 
-    let lookAt = this.steps[0].targetLook
-    for (let i = 0; i < this.steps.length; i++) {
-      const prevStep = this.steps[i - 1]
-      const step = this.steps[i]
-      if (prevStep && progress > prevStep.targetPosition && progress < step.targetPosition) {
-        lookAt = this.steps[i].targetLook
-      }
-    }
-    this.originLookX = lookAt.x
-    this.originLookY = lookAt.y
-    this.originLookZ = lookAt.z
+    const currentLookAt = this.trailLookAt.getPoint(progress)
+    this.originLookX = currentLookAt.x
+    this.originLookY = currentLookAt.y
+    this.originLookZ = currentLookAt.z
 
     this.cameraBox.lookAt(new THREE.Vector3(this.originLookX, this.originLookY, 0))
-  }
-
-  goToPrev = () => {
-    if (this.index - 1 >= 0) {
-      this.goTo({
-        detail: {
-          index: this.index - 1,
-          sibling: true,
-        },
-      })
-    }
-  }
-
-  goToNext = () => {
-    if (this.index + 1 <= this.steps.length - 1) {
-      this.goTo({
-        detail: {
-          index: this.index + 1,
-          sibling: true,
-        },
-      })
-    }
-  }
-
-  goTo = e => {
-    const { index, sibling } = e.detail
-    let originIndex = this.lastIndex
-    if (sibling) {
-      if (this.animStarted) return // prevent skipping a section
-      // Get direction
-      // Skip directly from the index but just before or after depending of the position. (the previous state)
-    } else if (this.lastIndex < index) {
-      originIndex = index - 1
-    } else if (this.lastIndex > index) {
-      originIndex = index + 1
-    } else {
-      return
-    }
-
-    const { targetPosition, targetLook } = this.steps[originIndex]
-    this.originPosition = targetPosition
-    this.originLookX = targetLook.x
-    this.originLookY = targetLook.y
-    this.originLookZ = targetLook.z
-
-    if (!sibling) {
-      // skip to previous state
-      const currentPos = this.trailPosition.getPoint(this.originPosition)
-      this.cameraBox.position.copy(currentPos)
-      this.cameraBox.lookAt(new THREE.Vector3(this.originLookX, this.originLookY, 0))
-    }
-
-    this.start(index)
   }
 
   start(index) {
@@ -409,8 +350,6 @@ class CameraController {
   render(now) {
     if (!this.introEnded && this.introStarted) {
       this.animateIntro(now)
-    } else if (this.startAnimation) {
-      this.animateOnPath(now)
     }
 
     if (this.canMove) {
@@ -426,33 +365,6 @@ class CameraController {
     if (this.camera.rotation.y !== toRadian(this.targetRotateY)) {
       this.camera.rotation.y += (toRadian(this.targetRotateY) - this.camera.rotation.y) * this.coefRotate
       this.camera.updateProjectionMatrix()
-    }
-  }
-
-  animateOnPath(now) {
-    let percentPosition = (now - this.startAnimation) / this.durationPosition
-    percentPosition = Math.max(percentPosition, 0)
-
-    if (percentPosition < 1) {
-      this.progressPosition =
-        this.originPosition + (this.targetPosition - this.originPosition) * inOutQuart(percentPosition)
-    }
-    const currentPos = this.trailPosition.getPoint(this.progressPosition)
-    this.cameraBox.position.copy(currentPos)
-
-    let percentLook = (now - this.startAnimation) / this.durationLook
-    percentLook = Math.max(percentLook, 0)
-
-    if (percentLook < 1) {
-      this.animStarted = true
-      this.progressLookX = this.originLookX + (this.targetLook.x - this.originLookX) * inOutQuart(percentLook)
-      this.progressLookY = this.originLookY + (this.targetLook.y - this.originLookY) * inOutQuart(percentLook)
-      this.progressLookZ = this.originLookZ + (this.targetLook.z - this.originLookZ) * inOutQuart(percentLook)
-      // console.log(this.progressLookX, this.progressLookY, this.progressLookZ)
-
-      this.cameraBox.lookAt(new THREE.Vector3(this.progressLookX, this.progressLookY, 0))
-    } else {
-      this.animStarted = false
     }
   }
 
@@ -484,11 +396,6 @@ class CameraController {
   guiChange = () => {
     const currentPos = this.trailPosition.getPoint(this.guiController.position / 1000)
     this.sphereHelperPosition.position.copy(currentPos)
-    // this.pMesh.position.y = this.guiController.look
-    // this.cameraBox.lookAt(new THREE.Vector3(0, this.guiController.look, 0))
-
-    // const currentLook = this.trailLook.getPoint(this.guiController.look / 1000)
-    // this.sphereHelperLook.position.copy(currentLook)
   }
 }
 
