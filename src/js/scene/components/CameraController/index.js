@@ -382,6 +382,8 @@ class CameraController {
       }
     } else {
       this.introEnded = true
+      // enable scrolling
+      document.documentElement.classList.add('scroll')
     }
 
     let percentLook = (now - this.startIntroAnimation) / this.durationIntroLook

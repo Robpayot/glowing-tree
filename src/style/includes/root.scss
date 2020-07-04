@@ -1,6 +1,10 @@
 html {
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow: hidden;
+
+  &.scroll {
+    overflow: visible;
+  }
 }
 
 *,
@@ -12,9 +16,7 @@ html {
 body {
   background-color: #001f1e;
   color: white;
-  // font-family: $basis;
   font-weight: 300;
-  overflow-x: hidden;
   line-height: 1.3;
   position: relative;
 }
