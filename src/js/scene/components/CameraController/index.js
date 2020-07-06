@@ -1,7 +1,7 @@
 import { getNow } from '~utils/time'
 import { toRadian } from '~utils/math'
 import { inOutQuart } from '~utils/ease'
-import { DEBUG, MOUSE_MOVE, GO_TO_PREV, GO_TO_NEXT, GO_TO, SCROLL } from '~constants/index'
+import { DEBUG, MOUSE_MOVE, SCROLL } from '~constants/index'
 import LoaderManager from '~managers/LoaderManager'
 import touchEnabled from '~utils/touchEnabled'
 
@@ -48,10 +48,8 @@ class CameraController {
     this.camera = camera
 
     this.scene = scene
-    this.initGui()
 
     this.scene.add(this.camera)
-
 
     const { gltf } = LoaderManager.subjects.scene
     const cameraPoints = gltf.scene.getObjectByName('CamerasPoints')
@@ -59,7 +57,6 @@ class CameraController {
     this.trailPosition = this.createTrail(cameraPoints)
     this.createLookAt()
     this.trailLookAt = this.createLookAtTrail(this.lookPoints)
-    this.createSteps()
 
     this.introTrailPosition = this.createIntroTrail()
     this.createLookIntro()
@@ -75,15 +72,6 @@ class CameraController {
 
     this.camera.rotation.x = toRadian(180) // fix cameraBox
 
-
-    const g = new THREE.SphereGeometry(5, 32, 32)
-    const m = new THREE.MeshBasicMaterial({color: 0x0000ff})
-    this.spotlightTarget = new THREE.Mesh(g, m)
-    this.spotlightTarget.visible = false
-    this.spotlightTarget.position.z = -100
-
-    this.camera.add(this.spotlightTarget)
-
     if (DEBUG) {
       this.camera.position.set(0, 150, 450)
       this.camera.lookAt(0, 0, 0)
@@ -97,9 +85,7 @@ class CameraController {
       this.cameraBox.lookAt(this.lookIntroPoints[0])
       this.camera.lookAt(this.lookIntroPoints[0])
 
-      // setTimeout(() => {
       this.startIntro()
-      // }, 0)
     }
   }
 
@@ -107,26 +93,21 @@ class CameraController {
     const points = []
     // // get meshes
     for (let i = 0; i < coordinates.length; i++) {
-      // position.x *= 115
-      // position.y *= 115
-      // position.z *= 115
       points.push(coordinates[i])
     }
 
     // create trail for camera
     const curveWithMorePoints = new THREE.CatmullRomCurve3(points).getPoints(200)
     const finalTrail = new THREE.CatmullRomCurve3(curveWithMorePoints)
-    // For devug
-    // this.trail.curveType = 'catmullrom'
-    // this.trail.tension = 0.99
-    const curveGeometry = new THREE.Geometry().setFromPoints(curveWithMorePoints)
+    // For debug
+    // const curveGeometry = new THREE.Geometry().setFromPoints(curveWithMorePoints)
 
-    // // Build the geometry
-    const material = new THREE.LineBasicMaterial({ color: 0xffff00 })
-    // // Create the final object to add to the scene
-    const curveObject = new THREE.Line(curveGeometry, material)
+    // // // Build the geometry
+    // const material = new THREE.LineBasicMaterial({ color: 0xffff00 })
+    // // // Create the final object to add to the scene
+    // const curveObject = new THREE.Line(curveGeometry, material)
 
-    this.scene.add(curveObject)
+    // this.scene.add(curveObject)
 
     return finalTrail
   }
@@ -146,32 +127,28 @@ class CameraController {
       if (children[i].type === 'Mesh') {
         const position = new THREE.Vector3()
         position.setFromMatrixPosition( children[i].matrixWorld )
-        // position.x *= 115
-        // position.y *= 115
-        // position.z *= 115
         points.push(position)
         children[i].material = debugMaterial
       }
     }
 
-    // for debug
     // reverse arrays so curve is starting from the rigth direction
     points.reverse()
+    // put the first position closer to the tree
+    points[0].z -= 600
 
     // create trail for camera
     const curveWithMorePoints = new THREE.CatmullRomCurve3(points).getPoints(200)
     const finalTrail = new THREE.CatmullRomCurve3(curveWithMorePoints)
-    // For devug
-    // this.trail.curveType = 'catmullrom'
-    // this.trail.tension = 0.99
-    const curveGeometry = new THREE.Geometry().setFromPoints(curveWithMorePoints)
+    // For debug
+    // const curveGeometry = new THREE.Geometry().setFromPoints(curveWithMorePoints)
 
-    // // Build the geometry
-    const material = new THREE.LineBasicMaterial({ color: 0xff0000 })
-    // // Create the final object to add to the scene
-    const curveObject = new THREE.Line(curveGeometry, material)
+    // // // Build the geometry
+    // const material = new THREE.LineBasicMaterial({ color: 0xff0000 })
+    // // // Create the final object to add to the scene
+    // const curveObject = new THREE.Line(curveGeometry, material)
 
-    this.scene.add(curveObject)
+    // this.scene.add(curveObject)
 
     return finalTrail
   }
@@ -187,68 +164,10 @@ class CameraController {
       new THREE.Vector3(0, -58, 0),
     ]
 
-    for (let i = 0; i < this.lookPoints.length; i++) {
-      const cGeometry = new THREE.SphereGeometry(5, 32, 32)
-
-      let cMaterial2
-      if (i === 0) {
-        cMaterial2 = new THREE.MeshBasicMaterial({ color: 0xffffff }) // 0
-      } else if (i === 1) {
-        cMaterial2 = new THREE.MeshBasicMaterial({ color: 0xff0000 }) // 1
-      } else if (i === 2) {
-        cMaterial2 = new THREE.MeshBasicMaterial({ color: 0x00ff00 }) // 2
-      } else if (i === 3) {
-        cMaterial2 = new THREE.MeshBasicMaterial({ color: 0x0000ff }) // 3
-      } else if (i === 4) {
-        cMaterial2 = new THREE.MeshBasicMaterial({ color: 0xff00ff }) // 4
-      } else if (i === 5) {
-        cMaterial2 = new THREE.MeshBasicMaterial({ color: 0x00ffff }) // 4
-      } else if (i === 6) {
-        cMaterial2 = new THREE.MeshBasicMaterial({ color: 0x000000 }) // 4
-      }
-      const mesh = new THREE.Mesh(cGeometry, cMaterial2)
-      mesh.position.copy(this.lookPoints[i])
-      // this.scene.add(mesh)
-      this.pMesh = mesh
-    }
-
     this.progressPosition = 0
     this.progressLookX = this.lookPoints[1].x
     this.progressLookY = this.lookPoints[1].y
     this.progressLookZ = this.lookPoints[1].z
-  }
-
-  createSteps() {
-    this.steps = [
-      {
-        targetLook: this.lookPoints[0],
-        targetPosition: 0.03,
-      },
-      {
-        targetLook: this.lookPoints[1],
-        targetPosition: 0.136,
-      },
-      {
-        targetLook: this.lookPoints[2],
-        targetPosition: 0.313,
-      },
-      {
-        targetLook: this.lookPoints[3],
-        targetPosition: 0.507,
-      },
-      {
-        targetLook: this.lookPoints[4],
-        targetPosition: 0.600,
-      },
-      {
-        targetLook: this.lookPoints[5],
-        targetPosition: 0.838,
-      },
-      {
-        targetLook: this.lookPoints[6],
-        targetPosition: 1,
-      },
-    ]
   }
 
   createIntroTrail() {
@@ -256,7 +175,7 @@ class CameraController {
     // Filter meshes
     const points = [
       new THREE.Vector3(0, 70, 500),
-      this.trailPosition.getPoint(this.steps[0].targetPosition),
+      this.trailPosition.getPoint(0),
     ]
 
     // create trail for camera
@@ -273,18 +192,6 @@ class CameraController {
       new THREE.Vector3(0, 70, 0),
       this.lookPoints[0],
     ]
-  }
-
-  initGui() {
-    // this.guiController = { position: 0, look: 500 }
-
-    // GUI.add(this.guiController, 'position', 0, 1000).onChange(this.guiChange)
-    // GUI.add(this.guiController, 'look', -800, 800).onChange(this.guiChange)
-
-    const cGeometry = new THREE.SphereGeometry(5, 32, 32)
-    const cMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff })
-    this.sphereHelperPosition = new THREE.Mesh(cGeometry, cMaterial)
-    // this.scene.add(this.sphereHelperPosition)
   }
 
   events() {
@@ -320,23 +227,6 @@ class CameraController {
     this.originLookZ = currentLookAt.z
 
     this.cameraBox.lookAt(new THREE.Vector3(this.originLookX, this.originLookY, 0))
-  }
-
-  start(index) {
-    // improve that
-    if (this.lastIndex === 0 && index === 1) {
-      this.durationPosition = 5500
-      this.durationLook = 5500
-    } else {
-      this.durationPosition = 4500
-      this.durationLook = 4500
-    }
-
-    this.index = index
-    this.targetLook = this.steps[index].targetLook
-    this.targetPosition = this.steps[index].targetPosition
-    this.startAnimation = getNow()
-    this.lastIndex = index
   }
 
   startIntro() {
@@ -380,7 +270,6 @@ class CameraController {
       const progIntro = inOutQuart(percentPosition)
       const currentPos = this.introTrailPosition.getPoint(progIntro)
       this.cameraBox.position.copy(currentPos)
-      // console.log(currentPos)
 
       if (percentPosition > 0.3) {
         this.canMove = true
@@ -398,11 +287,6 @@ class CameraController {
     this.progressLookIntroZ = this.originLookIntroZ + (this.targetLookIntro.z - this.originLookIntroZ) * inOutQuart(percentLook)
 
     this.cameraBox.lookAt(new THREE.Vector3(this.progressLookIntroX, this.progressLookIntroY, 0))
-  }
-
-  guiChange = () => {
-    const currentPos = this.trailPosition.getPoint(this.guiController.position / 1000)
-    this.sphereHelperPosition.position.copy(currentPos)
   }
 }
 
