@@ -37,6 +37,10 @@ class CameraController {
     // Intro
     this.durationIntroPosition = 8000
     this.durationIntroLook = 8000
+
+    if (history.scrollRestoration) {
+      history.scrollRestoration = 'manual' // prevent chrome automatic scroll
+    }
   }
 
   init(camera, scene) {
@@ -308,6 +312,7 @@ class CameraController {
     const progress = scrollY / maxHeight
     const currentPos = this.trailPosition.getPoint(progress)
     this.cameraBox.position.copy(currentPos)
+    this.progressPosition = progress
 
     const currentLookAt = this.trailLookAt.getPoint(progress)
     this.originLookX = currentLookAt.x
