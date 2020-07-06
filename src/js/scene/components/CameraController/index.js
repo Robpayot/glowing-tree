@@ -64,12 +64,6 @@ class CameraController {
     const currentPos = this.trailPosition.getPoint(0)
     this.cameraBox.position.copy(currentPos)
 
-    this.ui = {
-      prev: document.querySelector('.scene__cta--prev'),
-      next: document.querySelector('.scene__cta--next'),
-      select: document.querySelector('.scene__cta--select'),
-    }
-
     this.camera.rotation.x = toRadian(180) // fix cameraBox
 
     if (DEBUG) {

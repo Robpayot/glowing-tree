@@ -6,10 +6,6 @@ export const BLOOM = bloom
 export const RAF = 'RAF'
 export const WINDOW_RESIZE = 'WINDOW_RESIZE'
 export const MOUSE_MOVE = 'MOUSE_MOVE'
-export const GO_TO_NEXT = 'GO_TO_NEXT'
-export const GO_TO_PREV = 'GO_TO_PREV'
-export const GO_TO = 'GO_TO'
-export const PAUSE_SCENE = 'PAUSE_SCENE'
 export const START_SCENE = 'START_SCENE'
 export const SCROLL = 'SCROLL'
 
