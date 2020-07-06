@@ -113,9 +113,7 @@ export default class Scene {
 
     GUI.add(this.guiController, 'exposure', 0.0, 10.0).onChange(this.guiChange)
     GUI.add(this.guiController, 'bloomStrength', 0.0, 20.0).onChange(this.guiChange)
-    GUI.add(this.guiController, 'bloomThreshold', 0.0, 1.0).onChange(this.guiChange)
-    GUI.add(this.guiController, 'bloomRadius', 0.0, 10.0).onChange(this.guiChange)
-    // GUI.addColor(this.guiController, 'background').onChange(this.guiChange)
+    GUI.close()
   }
 
   guiChange = () => {
