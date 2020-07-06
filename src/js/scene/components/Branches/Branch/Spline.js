@@ -90,6 +90,9 @@ const lineMaterials = [
   }),
 ]
 
+const rangeTurbulence = 7
+const rangeSmallTurbulence = 2
+
 export default class Spline {
   constructor(scene, camera, points) {
     this.scene = scene
@@ -112,7 +115,6 @@ export default class Spline {
 
     this.lineThickness = 1 // AKA thickness
     this.lineThicknessMax = 2.5
-    this.rangeTurbulence = 9
 
     this.object = new THREE.Object3D()
     this.color = new THREE.Color(COLORS.lines2)
@@ -149,9 +151,13 @@ export default class Spline {
 
         if (i !== 0 && i !== array.length - 1 && i !== array.length - 2) {
           if (i % 2 === 0) {
-            pos.x += randomInt(-this.rangeTurbulence, this.rangeTurbulence)
-            pos.y += randomInt(-this.rangeTurbulence, this.rangeTurbulence)
-            pos.z += randomInt(-this.rangeTurbulence, this.rangeTurbulence)
+            pos.x += randomInt(-rangeTurbulence, rangeTurbulence)
+            pos.y += randomInt(-rangeTurbulence, rangeTurbulence)
+            pos.z += randomInt(-rangeTurbulence, rangeTurbulence)
+          } else {
+            pos.x += randomInt(-rangeSmallTurbulence, rangeSmallTurbulence)
+            pos.y += randomInt(-rangeSmallTurbulence, rangeSmallTurbulence)
+            pos.z += randomInt(-rangeSmallTurbulence, rangeSmallTurbulence)
           }
         }
 

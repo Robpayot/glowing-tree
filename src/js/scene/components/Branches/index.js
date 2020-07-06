@@ -68,7 +68,7 @@ export default class Branches {
     Promise.all(promises).then(() => {
       // call this function again
       this.startAllAnimations()
-      console.log('restart all')
+      // console.log('restart all')
     })
   }
 
