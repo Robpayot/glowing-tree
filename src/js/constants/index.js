@@ -1,6 +1,6 @@
 const bloom = true
 
-export const DEBUG = false
+export const DEBUG = true
 export const BLOOM = bloom
 // events
 export const RAF = 'RAF'

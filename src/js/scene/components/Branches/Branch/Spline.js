@@ -149,17 +149,23 @@ export default class Spline {
           z: array[i].position.z,
         }
 
-        if (i !== 0 && i !== array.length - 1 && i !== array.length - 2) {
-          if (i % 2 === 0) {
-            pos.x += randomInt(-rangeTurbulence, rangeTurbulence)
-            pos.y += randomInt(-rangeTurbulence, rangeTurbulence)
-            pos.z += randomInt(-rangeTurbulence, rangeTurbulence)
-          } else {
-            pos.x += randomInt(-rangeSmallTurbulence, rangeSmallTurbulence)
-            pos.y += randomInt(-rangeSmallTurbulence, rangeSmallTurbulence)
-            pos.z += randomInt(-rangeSmallTurbulence, rangeSmallTurbulence)
-          }
-        }
+        // if (i !== 0 && i !== array.length - 1 && i !== array.length - 2) {
+        //   if (i % 2 === 0) {
+        //     pos.x += randomInt(-rangeTurbulence, rangeTurbulence)
+        //     pos.y += randomInt(-rangeTurbulence, rangeTurbulence)
+        //     pos.z += randomInt(-rangeTurbulence, rangeTurbulence)
+        //   } else {
+        //     pos.x += randomInt(-rangeSmallTurbulence, rangeSmallTurbulence)
+        //     pos.y += randomInt(-rangeSmallTurbulence, rangeSmallTurbulence)
+        //     pos.z += randomInt(-rangeSmallTurbulence, rangeSmallTurbulence)
+        //   }
+        // }
+
+        const g = new THREE.BoxGeometry(10,10,10)
+        const m = new THREE.MeshBasicMaterial({ color: 0xFF0000 })
+        const mesh = new THREE.Mesh(g, m)
+        mesh.position.copy(pos)
+        this.scene.add(mesh)
 
         points.push(pos)
       }
