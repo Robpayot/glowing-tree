@@ -154,9 +154,6 @@ export default class Leaves {
       if (this.currentRotateY !== toRadian(this.targetRotateY) && this.currentRotateX !== toRadian(this.targetRotateX)) {
         this.mouseMoveRotate()
       }
-    } else {
-      // reset rotations
-      this.resetRotations()
     }
 
     for (let i = 0; i < this.groupLeaves.length; i++) {
@@ -216,13 +213,6 @@ export default class Leaves {
     object.rotation.copy(helper.rotation)
     // remove helper
     helper.remove()
-  }
-
-  resetRotations() {
-    for (let i = 0; i < this.groupLeaves.length; i++) {
-      const { mesh, originRotation } = this.groupLeaves[i]
-      mesh.rotation.copy(originRotation)
-    }
   }
 
   guiChange = () => {
