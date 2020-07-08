@@ -10,6 +10,7 @@ const { THREE } = window
 class CameraController {
   constructor() {
     this.progressPosition = 0
+    this.progressPositionTarget = 0
     this.progressLookX = 0
     this.progressLookY = 0
     this.progressLookZ = 0
@@ -30,6 +31,7 @@ class CameraController {
     this.rotateForceStep1X = 2
     this.rotateForceStep1Y = 3
     this.coefRotate = 0.035
+    this.coefMove = 0.08
     this.allowRotateThreshold = 0.08
     this.targetRotateX = 180
     this.targetRotateY = 0
@@ -211,16 +213,7 @@ class CameraController {
   handleScroll = e => {
     const { scrollY, maxHeight } = e.detail
     const progress = scrollY / maxHeight
-    const currentPos = this.trailPosition.getPoint(progress)
-    this.cameraBox.position.copy(currentPos)
-    this.progressPosition = progress
-
-    const currentLookAt = this.trailLookAt.getPoint(progress)
-    this.originLookX = currentLookAt.x
-    this.originLookY = currentLookAt.y
-    this.originLookZ = currentLookAt.z
-
-    this.cameraBox.lookAt(new THREE.Vector3(this.originLookX, this.originLookY, 0))
+    this.progressPositionTarget = progress
   }
 
   startIntro() {
@@ -241,6 +234,10 @@ class CameraController {
       this.animateIntro(now)
     }
 
+    if (this.introEnded) {
+      this.scrollMoveCamera()
+    }
+
     if (this.canMove) {
       this.mouseMoveCamera()
     }
@@ -255,6 +252,20 @@ class CameraController {
       this.camera.rotation.y += (toRadian(this.targetRotateY) - this.camera.rotation.y) * this.coefRotate
       this.camera.updateProjectionMatrix()
     }
+  }
+
+  scrollMoveCamera() {
+    // move camera
+    // add delay to camera movement
+    this.progressPosition += (this.progressPositionTarget - this.progressPosition) * this.coefMove
+    const currentPos = this.trailPosition.getPoint(this.progressPosition)
+    this.cameraBox.position.copy(currentPos)
+    const currentLookAt = this.trailLookAt.getPoint(this.progressPosition)
+    this.originLookX = currentLookAt.x
+    this.originLookY = currentLookAt.y
+    this.originLookZ = currentLookAt.z
+
+    this.cameraBox.lookAt(new THREE.Vector3(this.originLookX, this.originLookY, 0))
   }
 
   animateIntro(now) {
