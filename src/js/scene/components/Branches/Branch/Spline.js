@@ -106,9 +106,9 @@ export default class Spline {
     this.lineWidthMin = 0.5
     this.lineWidthMax = 1.5
     this.lineSinFq = 6
-    this.nbPoints = randomInt(30, 200) // AKA length
+    this.nbPoints = randomInt(30, 150) // AKA length
 
-    this.duration = 8000 + this.nbPoints * 20
+    this.duration = 8000 + this.nbPoints * 22
     this.progress = 0
     this.pointMaterial = pointMaterials[this.style]
     this.pointMaterial.map = LoaderManager.subjects.particle_1.texture
@@ -241,15 +241,12 @@ export default class Spline {
       const { lineWidth } = this.lineMesh.material.uniforms
       const percent = (this.now - this.startAnimation) / this.duration
 
-      if (percent < 1) {
-        // if (percent < 0.2) {
-        //   this.lineMesh.visible = false
-        // } else {
-        //   this.lineMesh.visible = true
-        // }
-
+      if (percent < 1.2) {
         this.progress = 1 * inOutQuart(percent)
         this.lineTrail.advance(this.trail.getPoint(this.progress))
+        if (percent > 1) {
+          this.pointMaterial.visible = false
+        }
       } else {
         this.resetLinePosition()
         this.progress = 0
@@ -257,6 +254,7 @@ export default class Spline {
         if (!this.isAnimationDone) {
           this.resolveAnimation()
           this.isAnimationDone = true
+          this.pointMaterial.visible = true
         }
       }
 

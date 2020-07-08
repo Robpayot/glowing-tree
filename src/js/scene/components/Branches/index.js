@@ -101,15 +101,16 @@ export default class Branches {
         points.children[7].position.z += 10
         points.children[8].position.z += 10
       } else if (i === 7) {
+        points.children[0].position.z -= 25
         points.children[6].position.z += 10
         points.children[7].position.z += 10
         points.children[8].position.z += 10
       }
-
       const branch = new Branch(this.scene, this.camera, points)
       this.branches.push(branch)
 
       this.scene.add(branch.object)
+
     }
   }
 
