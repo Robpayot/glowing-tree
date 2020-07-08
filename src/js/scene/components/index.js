@@ -210,14 +210,7 @@ export default class Scene {
     const farPlane = 10000
 
     this.camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane)
-    // this.camera.position.set(0, 1500, 1500)
-    // this.camera.position.set(5, 0, 10)
-
-    // previous
-    // this.camera.position.set(15, 0, 100)
-
     this.camera.zoom = 0.3
-    // this.camera.lookAt(0, 500, 0)
     this.camera.updateProjectionMatrix()
 
     CameraController.init(this.camera, this.scene)

@@ -9,7 +9,6 @@ class LoaderManager {
     this.subjects = {}
 
     this.textureLoader = new THREE.TextureLoader()
-    this.cubeTextureLoader = new THREE.CubeTextureLoader()
     this.FBXLoader = new FBXLoader()
     this.GLTFLoader = new THREE.GLTFLoader()
     this.DRACOLoader = new THREE.DRACOLoader()
@@ -18,7 +17,7 @@ class LoaderManager {
   load = (objects, callback) => {
     const promises = []
     for (let i = 0; i < objects.length; i++) {
-      const { name, fbx, gltf, texture, img, cubeTexture } = objects[i]
+      const { name, fbx, gltf, texture, img } = objects[i]
 
       this.subjects[name] = {}
 
@@ -32,10 +31,6 @@ class LoaderManager {
 
       if (texture) {
         promises.push(this.loadTexture(texture, name))
-      }
-
-      if (cubeTexture) {
-        promises.push(this.loadCubeTexture(cubeTexture, name))
       }
 
       if (img) {
@@ -75,17 +70,6 @@ class LoaderManager {
     return new Promise(resolve => {
       this.textureLoader.load(url, result => {
         this.subjects[name].texture = result
-        resolve(result)
-      })
-    })
-  }
-
-  loadCubeTexture(path, name) {
-    this.cubeTextureLoader.setPath(path)
-
-    return new Promise(resolve => {
-      this.cubeTextureLoader.load(['posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg'], result => {
-        this.subjects[name].cubeTexture = result
         resolve(result)
       })
     })

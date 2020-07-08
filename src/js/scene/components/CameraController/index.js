@@ -126,6 +126,7 @@ class CameraController {
     points.reverse()
     // put the first position closer to the tree
     points[0].z -= 600
+    points[1].y += 100
 
     // create trail for camera
     const curveWithMorePoints = new THREE.CatmullRomCurve3(points).getPoints(200)
