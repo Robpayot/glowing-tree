@@ -225,7 +225,6 @@ export default class Scene {
 
   buildControls() {
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
-    this.controls.enableDamping = true
   }
 
   // RAF

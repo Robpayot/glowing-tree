@@ -28,7 +28,7 @@ export default class Tree {
     const { gltf } = LoaderManager.subjects.scene
 
     this.tree = gltf.scene.getObjectByName('GEO')
-    this.tree.material = new THREE.MeshBasicMaterial({transparent: true, opacity: 0.5})
+    this.tree.material = new THREE.MeshBasicMaterial()
     this.tree.material.color.setHex(this.guiController.tree_color)
 
     this.scene.add(this.tree)

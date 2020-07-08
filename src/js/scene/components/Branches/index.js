@@ -41,6 +41,71 @@ export default class Branches {
   initBranches() {
     for (let i = 0; i < this.splinesPoints.length; i++) {
       const points = this.splinesPoints[i]
+
+      // modify splines points in code because I don't have blender :(
+      if (i === 0) {
+        points.children[1].position.y += 30
+        points.children[2].position.y += 22
+        points.children[3].position.y += 20
+        points.children[4].position.y += 20
+        points.children[5].position.y += 20
+        points.children[6].position.y += 10
+        points.children[7].position.y -= 20
+        points.children[8].position.y -= 20
+        points.children[9].position.y -= 10
+        points.children[9].position.z -= 2
+      } else if (i === 1) {
+        points.children[1].position.y += 22
+        points.children[2].position.y += 22
+        points.children[3].position.y += 20
+        points.children[4].position.y += 20
+        points.children[5].position.y += 20
+        points.children[6].position.y += 10
+        points.children[7].position.y -= 20
+        points.children[8].position.y -= 20
+        points.children[9].position.y -= 10
+        points.children[9].position.z -= 2
+      } else if (i === 2) {
+        points.children[1].position.y -= 15
+        points.children[2].position.y -= 15
+        points.children[3].position.y -= 15
+        points.children[4].position.y -= 10
+        points.children[5].position.y -= 5
+        points.children[8].position.x += 10
+        points.children[9].position.x += 10
+        points.children[10].position.x += 10
+      } else if (i === 3) {
+        points.children[1].position.z -= 15
+        points.children[2].position.z -= 15
+        points.children[3].position.z -= 15
+        points.children[4].position.z -= 15
+        points.children[5].position.z -= 5
+        points.children[6].position.y -= 10
+        points.children[7].position.y -= 10
+        points.children[8].position.y -= 10
+        points.children[9].position.y -= 10
+      } else if (i === 4) {
+        points.children[0].position.y += 20
+        points.children[1].position.y += 20
+        points.children[2].position.y += 20
+        points.children[3].position.y += 20
+        points.children[4].position.y += 10
+      } else if (i === 5) {
+        points.children[3].position.y += 10
+        points.children[4].position.y += 15
+        points.children[5].position.y += 10
+      } else if (i === 6) {
+        points.children[3].position.z += 10
+        points.children[4].position.z += 15
+        points.children[5].position.z += 10
+        points.children[7].position.z += 10
+        points.children[8].position.z += 10
+      } else if (i === 7) {
+        points.children[6].position.z += 10
+        points.children[7].position.z += 10
+        points.children[8].position.z += 10
+      }
+
       const branch = new Branch(this.scene, this.camera, points)
       this.branches.push(branch)
 
