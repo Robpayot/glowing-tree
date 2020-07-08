@@ -204,6 +204,12 @@ class CameraController {
     const { scrollY, maxHeight } = e.detail
     const progress = scrollY / maxHeight
     this.progressPositionTarget = progress
+
+    if (this.progressPositionTarget < this.allowRotateThreshold) {
+      document.documentElement.classList.add('show-scroll-text')
+    } else {
+      document.documentElement.classList.remove('show-scroll-text')
+    }
   }
 
   startIntro() {
@@ -270,6 +276,7 @@ class CameraController {
       this.introEnded = true
       // enable scrolling
       document.documentElement.classList.add('scroll')
+      document.documentElement.classList.add('show-scroll-text')
     }
 
     let percentLook = (now - this.startIntroAnimation) / this.durationIntroLook

@@ -1,11 +1,7 @@
 import LoaderManager from '~managers/LoaderManager'
-import GUI from '../Gui'
 import { COLORS } from '~constants/index'
 
 const { THREE } = window
-
-
-window.tree = null
 
 export default class Tree {
   constructor(scene, camera) {
@@ -32,8 +28,6 @@ export default class Tree {
     this.tree.material.color.setHex(this.guiController.tree_color)
 
     this.scene.add(this.tree)
-
-    GUI.addColor(this.guiController, 'tree_color').onChange(this.guiChange)
   }
 
   events() {
@@ -42,10 +36,5 @@ export default class Tree {
 
   render(now) {
     this.now = now
-  }
-
-  guiChange = () => {
-    this.tree.material.color.setHex(this.guiController.tree_color)
-    this.tree.material.needsUpdate = true
   }
 }
