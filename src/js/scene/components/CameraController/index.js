@@ -11,17 +11,11 @@ class CameraController {
   constructor() {
     this.progressPosition = 0
     this.progressPositionTarget = 0
-    this.progressLookX = 0
-    this.progressLookY = 0
-    this.progressLookZ = 0
 
     this.progressLookIntroX = 0
     this.progressLookIntroY = 0
     this.progressLookIntroZ = 0
 
-    this.index = 0
-    this.lastIndex = 0
-    this.animStarted = false
     this.mouse = {
       x: 0,
       y: 0,
@@ -159,11 +153,6 @@ class CameraController {
       new THREE.Vector3(0, 280, 0),
       new THREE.Vector3(0, -58, 0),
     ]
-
-    this.progressPosition = 0
-    this.progressLookX = this.lookPoints[1].x
-    this.progressLookY = this.lookPoints[1].y
-    this.progressLookZ = this.lookPoints[1].z
   }
 
   createIntroTrail() {
@@ -261,11 +250,8 @@ class CameraController {
     const currentPos = this.trailPosition.getPoint(this.progressPosition)
     this.cameraBox.position.copy(currentPos)
     const currentLookAt = this.trailLookAt.getPoint(this.progressPosition)
-    this.originLookX = currentLookAt.x
-    this.originLookY = currentLookAt.y
-    this.originLookZ = currentLookAt.z
 
-    this.cameraBox.lookAt(new THREE.Vector3(this.originLookX, this.originLookY, 0))
+    this.cameraBox.lookAt(new THREE.Vector3(currentLookAt.x, currentLookAt.y, 0))
   }
 
   animateIntro(now) {
