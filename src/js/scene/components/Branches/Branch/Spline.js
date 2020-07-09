@@ -241,7 +241,7 @@ export default class Spline {
       const { lineWidth } = this.lineMesh.material.uniforms
       const percent = (this.now - this.startAnimation) / this.duration
 
-      if (percent < 1.2) {
+      if (percent < 1.1) {
         this.progress = 1 * inOutQuart(percent)
         this.lineTrail.advance(this.trail.getPoint(this.progress))
         if (percent > 1) {
