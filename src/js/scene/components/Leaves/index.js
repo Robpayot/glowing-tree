@@ -80,7 +80,7 @@ export default class Leaves {
 
     this.guiController = { particles_color: COLORS.particles }
 
-    GUI.addColor(this.guiController, 'particles_color').name('ptcl').onChange(this.guiChange)
+    GUI.addColor(this.guiController, 'particles_color').name('ptcl tree').onChange(this.guiChange)
 
     this.events()
   }

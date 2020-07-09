@@ -1,5 +1,5 @@
 import LoaderManager from '~managers/LoaderManager'
-import { randomFloat } from '~utils/math'
+import { randomFloat, oscillateBetween } from '~utils/math'
 import GUI from '../Gui'
 
 const { THREE } = window
@@ -19,15 +19,15 @@ export default class FloatingParticles {
   constructor(scene) {
     this.nbParticles = 500
     this.range = 1000
+    this.opacity = 0
 
-    this.guiController = { particles_color_bkg: 0xffffff, particles_color_bkg_opacity: 0.9 }
+    this.guiController = { particles_color_bkg: 0xffffff }
 
     this.scene = scene
     const { texture } = LoaderManager.subjects.particle_2
 
     material.map = texture
     material.color.setHex(this.guiController.particles_color_bkg)
-    material.opacity = this.guiController.particles_color_bkg_opacity
 
     const geometry = new THREE.Geometry()
     const { range } = this
@@ -54,15 +54,13 @@ export default class FloatingParticles {
 
   initGUI() {
     GUI.addColor(this.guiController, 'particles_color_bkg').name('ptcl bkg').onChange(this.guiChange)
-    GUI.add(this.guiController, 'particles_color_bkg_opacity', 0.0, 1.0).name('ptcl bkg opacity').onChange(this.guiChange)
   }
 
   guiChange = () => {
     material.color.setHex(this.guiController.particles_color_bkg)
-    material.opacity = this.guiController.particles_color_bkg_opacity
   }
 
-  render() {
+  render(now) {
     if (!this.geometry) return
 
     for (let i = 0; i < this.geometry.vertices.length; i++) {
@@ -80,5 +78,7 @@ export default class FloatingParticles {
       }
     }
     this.geometry.verticesNeedUpdate = true
+    this.opacity = oscillateBetween(now, 0.5, 1, 0.0005)
+    material.opacity = this.opacity
   }
 }

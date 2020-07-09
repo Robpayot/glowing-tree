@@ -14,8 +14,8 @@ export function toRadian(degrees) {
   return degrees * Math.PI / 180
 }
 
-export function oscillateBetween(value, min, max, frequence = 1, offset = 0) {
+export function oscillateBetween(time, min, max, frequence = 1, offset = 0) {
   const amplitude = max - min
   const average = amplitude / 2 + min
-  return Math.sin(value * frequence + offset) * amplitude / 2 + average
+  return Math.sin(time * frequence + offset) * amplitude / 2 + average
 }

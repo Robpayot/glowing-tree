@@ -111,8 +111,8 @@ export default class Scene {
       background: 0xa231a,
     }
 
-    GUI.add(this.guiController, 'exposure', 0.0, 10.0).onChange(this.guiChange)
-    GUI.add(this.guiController, 'bloomStrength', 0.0, 20.0).onChange(this.guiChange)
+    GUI.add(this.guiController, 'exposure', 1.0, 1.3).onChange(this.guiChange)
+    GUI.add(this.guiController, 'bloomStrength', 0.0, 5.0).onChange(this.guiChange)
     GUI.close()
   }
 
