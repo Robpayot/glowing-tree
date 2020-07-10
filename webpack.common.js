@@ -25,9 +25,9 @@ module.exports = {
     app: './src/entry.js'
   },
   output: {
-    filename: isProd ? 'bundle.[chunkhash].js' : 'bundle.js',
-    path: path.resolve(__dirname, 'build'),
-    publicPath: '/',
+    filename: isProd ? 'bundle.[chunkhash].js' : './bundle.js',
+    path: path.resolve(__dirname, './build'),
+    publicPath: './',
   },
   resolve: {
     alias: {
