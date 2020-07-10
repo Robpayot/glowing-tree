@@ -4,6 +4,3 @@ lib
 node_modules
 .cache
 dist
-generated
-build
-build.zip
