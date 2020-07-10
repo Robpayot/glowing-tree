@@ -78,7 +78,7 @@ export default class FloatingParticles {
       }
     }
     this.geometry.verticesNeedUpdate = true
-    // this.opacity = oscillateBetween(now, 0.5, 1, 0.0005)
-    // material.opacity = this.opacity
+    this.opacity = oscillateBetween(now, 0.3, 1, 0.0008)
+    material.opacity = this.opacity
   }
 }
