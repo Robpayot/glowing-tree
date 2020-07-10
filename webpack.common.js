@@ -10,22 +10,23 @@ const cssnano = require('cssnano')
 const { registerHandlersHelpers } = require('./webpack.helpers.js')
 
 const mode = process.env.NODE_ENV || 'production'
-const PORT = process.env.PORT || 3000
 
 const sourceDir = path.join(__dirname, 'src')
 const templateDir = path.join(__dirname, 'generated')
-const buildDir = path.join(__dirname, 'build')
 
 const isProd = mode === 'production'
+console.log(isProd)
 const prodPlugins = [new ImageminPlugin({ test: /\.(jpeg|png|gif|svg)$/i })]
 
 module.exports = {
   mode,
   devtool: 'source-map',
-  entry: path.join(sourceDir, 'entry.js'),
+  entry: {
+    app: './src/entry.js'
+  },
   output: {
-    path: buildDir,
     filename: isProd ? 'bundle.[chunkhash].js' : 'bundle.js',
+    path: path.resolve(__dirname, 'build'),
     publicPath: '/',
   },
   resolve: {
@@ -98,7 +99,7 @@ module.exports = {
       entry: path.join(sourceDir, 'views', '*.hbs'),
       output: name => {
         const page = name !== 'index' ? name : ''
-        return path.join(buildDir, page, 'index.html')
+        return path.join('./build', page, 'index.html')
       },
       data: path.join(sourceDir, 'data', '*.json'),
       partials: [path.join(templateDir, 'template.hbs'), path.join(sourceDir, 'views', '*', '*.hbs')],
@@ -118,13 +119,5 @@ module.exports = {
       fallback: 'style-loader',
       use: [{ loader: 'css-loader', options: { minimize: isProd } }],
     }),
-  ].concat(isProd ? prodPlugins : []),
-  devServer: {
-    contentBase: buildDir,
-    compress: true,
-    port: PORT,
-    watchOptions: {
-      poll: true,
-    },
-  },
+  ].concat(isProd ? prodPlugins : [])
 }
