@@ -1,10 +1,9 @@
 import createCustomEvent from '../utils/createCustomEvent'
-import { RAF, START_SCENE, PAUSE_SCENE } from '../constants/index'
+import { RAF, START_SCENE } from '../constants/index'
 
 class RAFManager {
   constructor() {
     window.addEventListener(START_SCENE, this.start)
-    window.addEventListener(PAUSE_SCENE, this.pause)
   }
 
   handleRAF = now => {

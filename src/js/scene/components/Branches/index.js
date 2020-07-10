@@ -24,7 +24,6 @@ export default class Branches {
 
   getSplinesPoints() {
     const { gltf } = LoaderManager.subjects.scene
-    console.log(gltf)
 
     this.splinesPoints = [
       gltf.scene.getObjectByName('spline_1'),

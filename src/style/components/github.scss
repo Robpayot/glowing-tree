@@ -1,0 +1,26 @@
+.github {
+  display: flex;
+  color: white;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-weight: 200;
+  font-family: Oswald;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  opacity: 0.5;
+  align-items: center;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+    fill: white;
+    display: block;
+    margin-right: 5px;
+  }
+}

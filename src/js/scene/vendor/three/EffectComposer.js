@@ -237,7 +237,7 @@ THREE.Pass = function () {
 
 };
 
-console.log(THREE.Pass)
+// console.log(THREE.Pass)
 
 Object.assign( THREE.Pass.prototype, {
 
