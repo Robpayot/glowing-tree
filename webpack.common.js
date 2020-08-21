@@ -13,21 +13,19 @@ const mode = process.env.NODE_ENV || 'production'
 
 const sourceDir = path.join(__dirname, 'src')
 const templateDir = path.join(__dirname, 'generated')
+const buildDir = path.join(__dirname, 'build')
 
 const isProd = mode === 'production'
-console.log(isProd)
 const prodPlugins = [new ImageminPlugin({ test: /\.(jpeg|png|gif|svg)$/i })]
 
 module.exports = {
   mode,
   devtool: 'source-map',
-  entry: {
-    app: './src/entry.js'
-  },
+  entry: path.join(sourceDir, 'entry.js'),
   output: {
     filename: isProd ? 'bundle.[chunkhash].js' : './bundle.js',
-    path: path.resolve(__dirname, './build'),
-    publicPath: './',
+    path: buildDir,
+    publicPath: '/',
   },
   resolve: {
     alias: {
@@ -99,7 +97,7 @@ module.exports = {
       entry: path.join(sourceDir, 'views', '*.hbs'),
       output: name => {
         const page = name !== 'index' ? name : ''
-        return path.join('./build', page, 'index.html')
+        return path.join(buildDir, page, 'index.html')
       },
       data: path.join(sourceDir, 'data', '*.json'),
       partials: [path.join(templateDir, 'template.hbs'), path.join(sourceDir, 'views', '*', '*.hbs')],
