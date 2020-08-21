@@ -1,4 +1,4 @@
-# Altermind - Purée Maison
+# GLowing Tree
 
 Built with:
 
