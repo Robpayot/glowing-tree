@@ -1,4 +1,4 @@
-# GLowing Tree
+# Glowing Tree
 
 Built with:
 
