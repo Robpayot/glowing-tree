@@ -22,7 +22,8 @@
     "gsap": "^2.1.3",
     "hammerjs": "^2.0.8",
     "locomotive-scroll": "^3.5.4",
-    "three": "^0.113.2"
+    "three": "^0.113.2",
+    "webpack-merge": "^5.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
