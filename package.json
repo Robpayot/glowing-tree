@@ -18,7 +18,7 @@
     "IE 10"
   ],
   "dependencies": {
-    "browser-sync": "^2.26.7",
+    "browser-sync": "^2.27.10",
     "gsap": "^2.1.3",
     "hammerjs": "^2.0.8",
     "locomotive-scroll": "^3.5.4",
